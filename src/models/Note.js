@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const validate = require("validator");
-const { slugify } = require("slugify");
+const slugify = require("slugify");
 
 // SCHEMA
 const noteSchema = mongoose.Schema(
@@ -11,7 +11,8 @@ const noteSchema = mongoose.Schema(
       required: [true, "A note must have a title!"],
       unique: true,
       validate: {
-        validator: validate.isAlphanumeric,
+        validator: (val) =>
+          validate.isAlphanumeric(val, "en-US", { ignore: " " }),
         message: "Title must have alphanumeric characters only!",
       },
     },
@@ -30,13 +31,19 @@ const noteSchema = mongoose.Schema(
 
 // DOCUMENT MIDDLEWARE
 noteSchema.pre("save", async function (next) {
-  this.slug = slugify(this.title);
+  this.slug = slugify(this.title).toLowerCase();
 
-  // this.text = crypto
-  //   .createHash("sha256")
-  //   .update(this.text)
-  //   .digest("hex");
+  this.text = crypto
+    .createHash("sha256")
+    .update(this.text)
+    .digest("hex");
 
+  next();
+});
+
+// QUERY MIDDLEWARE
+noteSchema.pre(/^find/, function (next) {
+  this.select("-__v");
   next();
 });
 
