@@ -1,5 +1,11 @@
+const {
+  ResourceError,
+  MongoError,
+} = require("../errors/errorClasses");
+const { errorHandler } = require("../errors/errorHandlers");
+
 exports.createOne = (model) => {
-  return async (req, res) => {
+  return errorHandler(async (req, res) => {
     const result = await model.create(req.body);
 
     res.status(200).json({
@@ -7,15 +13,19 @@ exports.createOne = (model) => {
       message: "Document created!",
       result: result,
     });
-  };
+  });
 };
 
 exports.updateOne = (model) => {
   return async (req, res, next) => {
-    const result = await model.findOneAndUpdate(
-      { slug: req.params.name },
-      req.body,
-    );
+    const result = await model.findOne({ slug: req.params.name });
+
+    if (!result) {
+      return next(new ResourceError("Document not found!"));
+    }
+
+    Object.assign(result, req.body);
+    await result.save();
 
     res.status(200).json({
       status: "success",
@@ -27,7 +37,13 @@ exports.updateOne = (model) => {
 
 exports.deleteOne = (model) => {
   return async (req, res, next) => {
-    const result = await model.delete({ slug: req.params.name });
+    const result = await model.findOneAndDelete({
+      slug: req.params.name,
+    });
+
+    if (!result) {
+      return next(new ResourceError("Document not found!"));
+    }
 
     res.status(204).json({
       status: "success",
@@ -40,6 +56,10 @@ exports.getOne = (model) => {
   return async (req, res, next) => {
     const result = await model.findOne({ slug: req.params.name });
 
+    if (!result) {
+      return next(new ResourceError("Document not found!"));
+    }
+
     res.status(200).json({
       status: "success",
       message: "Document fetched!",
@@ -51,6 +71,10 @@ exports.getOne = (model) => {
 exports.getAll = (model) => {
   return async (req, res, next) => {
     const result = await model.find();
+
+    if (!result) {
+      return next(new MongoError("Documents could not be fetched!"));
+    }
 
     res.status(200).json({
       status: "success",

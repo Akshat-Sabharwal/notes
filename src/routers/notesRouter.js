@@ -1,13 +1,24 @@
 const express = require("express");
 const notesController = require("../controllers/notesController");
+const authController = require("../controllers/authController");
 
 // ROUTER
 const router = express.Router();
 
-// ROUTES
-router.route("/").post(notesController.createNote);
+// MIDDLEWARE
+router.use(authController.protectRoute);
 
-router.route("/:name").get(notesController.getNote);
+// ROUTES
+router
+  .route("/")
+  .post(notesController.createNote)
+  .get(notesController.getAllNotes);
+
+router
+  .route("/:name")
+  .get(notesController.getNote)
+  .patch(notesController.updateNote)
+  .delete(notesController.deleteNote);
 
 // EXPORTS
 module.exports = router;

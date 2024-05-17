@@ -14,6 +14,9 @@ mongoose
     process.env.NODE_ENV === "production"
       ? process.env.DB_CONNECTION_STRING_PROD
       : process.env.DB_CONNECTION_STRING_DEV,
+    {
+      dbName: "noteum",
+    },
   )
   .catch((err) => {
     throw new MongooseError(err.message);

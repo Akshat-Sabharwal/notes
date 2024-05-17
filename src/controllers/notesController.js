@@ -1,6 +1,8 @@
 const Note = require("../models/Note");
 const factoryHandler = require("../utils/factoryHandlers");
-const { errorHandler } = require("../errors/errorHandlers");
 
-exports.getNote = errorHandler(factoryHandler.getOne(Note));
-exports.createNote = errorHandler(factoryHandler.createOne(Note));
+exports.createNote = factoryHandler.createOne(Note);
+exports.getNote = factoryHandler.getOne(Note);
+exports.getAllNotes = factoryHandler.getAll(Note);
+exports.updateNote = factoryHandler.updateOne(Note);
+exports.deleteNote = factoryHandler.deleteOne(Note);

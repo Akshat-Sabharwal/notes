@@ -4,6 +4,7 @@ const {
   JWTError,
   ResourceError,
   MongooseError,
+  UnknownError,
 } = require("./errorClasses");
 
 exports.globalErrorHandler = (err, res) => {
@@ -16,7 +17,7 @@ exports.globalErrorHandler = (err, res) => {
       break;
 
     case "development":
-      res.status(err.code).json({
+      res.status(err.code || 500).json({
         name: err.name,
         message: err.message,
         stack: err.stack,
@@ -38,26 +39,30 @@ exports.errorHandler = (fn) => {
     try {
       await fn(req, res, next);
     } catch (err) {
+      console.log(err);
       switch (err.name) {
         case "ServerError":
-          next(new ServerError(err.message));
+          next(new ServerError(err.message, err.stack));
           break;
 
         case "MongoError":
-          next(new MongoError(err.message));
+          next(new MongoError(err.message, err.stack));
           break;
 
         case "MongooseError":
-          next(new MongooseError(err.message));
+          next(new MongooseError(err.message, err.stack));
           break;
 
-        case "JWTError":
-          next(new JWTError(err.message));
+        case "JsonWebTokenError":
+          next(new JWTError(err.message, err.stack));
           break;
 
         case "ResourceError":
-          next(new ResourceError(err.message));
+          next(new ResourceError(err.message, err.stack));
           break;
+
+        default:
+          next(new UnknownError(err.message, err.stack));
       }
     }
   };
