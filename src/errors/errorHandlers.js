@@ -45,9 +45,23 @@ exports.errorHandler = (fn) => {
           next(new ServerError(err.message, err.stack));
           break;
 
-        case "MongoError":
+        case "ValidationError":
           next(new MongoError(err.message, err.stack));
           break;
+
+        case "MongoServerError":
+          if (err.code === 11000) {
+            next(
+              new MongoError(
+                `User with ${Object.keys(err.keyValue)[0]} ${Object.values(err.keyValue)[0]} already exists!`,
+                err.stack,
+                "DuplicateError",
+              ),
+            );
+          } else {
+            next(new MongoError(err.message, err.stack));
+            break;
+          }
 
         case "MongooseError":
           next(new MongooseError(err.message, err.stack));

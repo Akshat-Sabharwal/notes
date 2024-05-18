@@ -9,6 +9,8 @@ const morgan = require("morgan");
 
 const notesRouter = require("../routers/notesRouter");
 const authRouter = require("../routers/authRouter");
+const userRouter = require("../routers/userRouter");
+const planRouter = require("../routers/planRouter");
 
 const errorHandler = require("../errors/errorHandlers");
 const { convertToMs } = require("../utils/conversion");
@@ -41,8 +43,10 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 
 // ROUTERS
+app.use("/user", userRouter);
 app.use("/note", notesRouter);
 app.use("/auth", authRouter);
+app.use("/subscription-plan", planRouter);
 
 // ERROR HANDLERS
 app.use("/", (err, req, res, next) => {

@@ -2,6 +2,7 @@ const {
   ResourceError,
   JWTError,
   AuthError,
+  ServerError,
 } = require("../errors/errorClasses");
 const { errorHandler } = require("../errors/errorHandlers");
 const jwt = require("jsonwebtoken");
@@ -19,22 +20,19 @@ const jwtSignToken = async (data) => {
 };
 
 const retrieveUser = async (req, next) => {
-  const identifier = req.body.email
-    ? "email"
-    : req.body.name
-      ? "name"
-      : null;
+  let user;
 
-  if (identifier === null) {
+  if (req.body.email) {
+    user = await User.findOne({
+      email: req.body.email,
+    }).select("+password");
+  } else if (req.body.name) {
+    user = await User.findOne({
+      name: req.body.name,
+    }).select("+password");
+  } else {
     return next(new ResourceError("Credentials not found!"));
   }
-
-  const user = await User.findOne(
-    {
-      identifier: req.body.identifier,
-    },
-    { password: 1 },
-  );
 
   if (!user) {
     return next(new ResourceError("User not found!"));
@@ -45,9 +43,9 @@ const retrieveUser = async (req, next) => {
 
 // SIGNUP
 exports.signup = errorHandler(async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
-  if (!email || !password) {
+  if (!email || !password || !role) {
     return next(
       new ResourceError("Request doesn't contain credentials!"),
     );
@@ -57,6 +55,7 @@ exports.signup = errorHandler(async (req, res, next) => {
     name: name,
     email: email,
     password: password,
+    role: role,
   });
 
   result = result.hidePassword();
@@ -83,11 +82,11 @@ exports.signup = errorHandler(async (req, res, next) => {
 exports.login = errorHandler(async (req, res, next) => {
   const { password } = req.body;
 
-  const user = await retrieveUser(req, next);
-
-  if (!user) {
-    return next(new ResourceError("User doesn't exist!"));
+  if (!password) {
+    return next(new ResourceError("Credentials not found!"));
   }
+
+  const user = await retrieveUser(req, next);
 
   const passwordCheck = await user.checkPassword(password);
 
@@ -132,10 +131,16 @@ exports.resetPassword = errorHandler(async (req, res, next) => {
 
   const user = await retrieveUser(req, next);
 
+  if (user.resetTokenExpires < Date.now()) {
+    return next(new AuthError("Password reset token has expired!"));
+  }
+
   const { password } = req.body;
 
   if (!password) {
-    return next(new ResourceError("Password not provided!"));
+    return next(
+      new ResourceError("Required information not provided!"),
+    );
   }
 
   if (user.passwordResetToken !== cookie) {
@@ -143,6 +148,8 @@ exports.resetPassword = errorHandler(async (req, res, next) => {
   }
 
   user.password = password;
+  user.passwordResetToken = undefined;
+  user.resetTokenExpires = undefined;
   await user.save();
 
   res.status(200).json({
@@ -165,13 +172,35 @@ exports.protectRoute = errorHandler(async (req, res, next) => {
     return next(new JWTError("Invalid JWT token!"));
   }
 
-  const user = await User.findOne({ _id: result });
+  const user = await User.findOne({ _id: result }).populate(
+    "subscription",
+  );
 
   if (!user) {
-    return next(new ResourceError("User not found!"));
+    return next(new AuthError("User not found!"));
   }
 
   req.user = user;
 
   next();
 });
+
+// RESTRICT TO
+exports.restrictTo = (...roles) => {
+  return async (req, res, next) => {
+    if (!req.user) {
+      return next(new AuthError("User not authenticated!"));
+    }
+
+    if (!roles.includes(req.user.role)) {
+      let forbiddenError = new AuthError(
+        "User does not have permission for this route!",
+      );
+      forbiddenError.code = 403;
+
+      return next(forbiddenError);
+    }
+
+    next();
+  };
+};

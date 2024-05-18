@@ -12,7 +12,10 @@ router.use(authController.protectRoute);
 router
   .route("/")
   .post(notesController.createNote)
-  .get(notesController.getAllNotes);
+  .get(
+    authController.restrictTo("admin"),
+    notesController.getAllNotes,
+  );
 
 router
   .route("/:name")

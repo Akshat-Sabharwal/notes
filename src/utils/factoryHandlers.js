@@ -17,8 +17,10 @@ exports.createOne = (model) => {
 };
 
 exports.updateOne = (model) => {
-  return async (req, res, next) => {
-    const result = await model.findOne({ slug: req.params.name });
+  return errorHandler(async (req, res, next) => {
+    const result = await model
+      .findOne({ slug: req.params.name })
+      .select("+slug");
 
     if (!result) {
       return next(new ResourceError("Document not found!"));
@@ -32,11 +34,11 @@ exports.updateOne = (model) => {
       message: "Document updated!",
       result: result,
     });
-  };
+  });
 };
 
 exports.deleteOne = (model) => {
-  return async (req, res, next) => {
+  return errorHandler(async (req, res, next) => {
     const result = await model.findOneAndDelete({
       slug: req.params.name,
     });
@@ -49,11 +51,11 @@ exports.deleteOne = (model) => {
       status: "success",
       message: "Document deleted!",
     });
-  };
+  });
 };
 
 exports.getOne = (model) => {
-  return async (req, res, next) => {
+  return errorHandler(async (req, res, next) => {
     const result = await model.findOne({ slug: req.params.name });
 
     if (!result) {
@@ -65,11 +67,11 @@ exports.getOne = (model) => {
       message: "Document fetched!",
       result: result,
     });
-  };
+  });
 };
 
 exports.getAll = (model) => {
-  return async (req, res, next) => {
+  return errorHandler(async (req, res, next) => {
     const result = await model.find();
 
     if (!result) {
@@ -81,5 +83,16 @@ exports.getAll = (model) => {
       message: "Documents fetched!",
       result: result,
     });
-  };
+  });
+};
+
+exports.deleteAll = (model) => {
+  return errorHandler(async (req, res, next) => {
+    await model.deleteMany({});
+
+    res.status(204).json({
+      status: "success",
+      message: "Documents deleted!",
+    });
+  });
 };

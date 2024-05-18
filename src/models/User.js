@@ -24,6 +24,25 @@ const userSchema = mongoose.Schema(
     password: {
       type: String,
       required: [true, "A user must have a password!"],
+      select: false,
+    },
+    role: {
+      type: String,
+      enum: {
+        values: ["user", "admin"],
+        message: "User role must have a value of admin or user.",
+      },
+      required: [true, "A user must have a role!"],
+    },
+    notes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Note",
+      },
+    ],
+    subscription: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Plan",
     },
     createdAt: {
       type: Date,
@@ -54,14 +73,15 @@ userSchema.methods.createPasswordResetToken = async function () {
     .digest("hex");
 
   this.passwordResetToken = hashedToken;
-  this.resetTokenExpires = convertToMs(10, "min");
+  this.resetTokenExpires = Date.now() + convertToMs(5, "min");
 
   return token;
 };
 
-userSchema.methods.checkPassword = async function (password) {
-  const result = await bcrypt.compare(password, this.password);
-  return result;
+userSchema.methods.checkPassword = async function (passwordToCheck) {
+  bcrypt.compare(passwordToCheck, this.password).then((val) => {
+    return val;
+  });
 };
 
 // DOCUMENT MIDDLEWARE
@@ -75,8 +95,8 @@ userSchema.pre("save", async function (next) {
 });
 
 // QUERY MIDDLEWARE
-userSchema.pre(/^find/, async function (next) {
-  this.select("-password");
+userSchema.pre(/^find/, function (next) {
+  this.select("-__v");
   next();
 });
 
