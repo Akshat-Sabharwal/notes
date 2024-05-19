@@ -15,7 +15,8 @@ router
   .get(
     authController.restrictTo("admin"),
     notesController.getAllNotes,
-  );
+  )
+  .delete(notesController.deleteAllNotes);
 
 router
   .route("/:name")

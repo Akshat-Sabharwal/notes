@@ -11,6 +11,7 @@ const notesRouter = require("../routers/notesRouter");
 const authRouter = require("../routers/authRouter");
 const userRouter = require("../routers/userRouter");
 const planRouter = require("../routers/planRouter");
+const meRouter = require("../routers/meRouter");
 
 const errorHandler = require("../errors/errorHandlers");
 const { convertToMs } = require("../utils/conversion");
@@ -26,7 +27,7 @@ app.use(helmet());
 app.use(expressMongoSanitize());
 app.use(hpp());
 app.use(xss());
-app.use(cors());
+app.use(cors({ credentials: true }));
 
 if (process.env.NODE_ENV === "production") {
   app.use(
@@ -46,6 +47,7 @@ app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/note", notesRouter);
 app.use("/auth", authRouter);
+app.use("/me", meRouter);
 app.use("/subscription-plan", planRouter);
 
 // ERROR HANDLERS

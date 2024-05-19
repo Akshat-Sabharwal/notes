@@ -28,7 +28,6 @@ const noteSchema = mongoose.Schema(
     },
     slug: {
       type: String,
-      select: false,
     },
   },
   { collection: "notes" },
@@ -48,9 +47,7 @@ noteSchema.pre("save", async function (next) {
 
 // QUERY MIDDLEWARE
 noteSchema.pre(/^find/, function (next) {
-  this.select("-__v").populate("author", {
-    notes: 0,
-  });
+  this.select("-__v");
   next();
 });
 

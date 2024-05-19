@@ -13,10 +13,11 @@ router
     authController.protectRoute,
     authController.restrictTo("admin"),
     planController.createPlan,
-  );
+  )
+  .delete(authController.protectRoute, planController.unsubscribe);
 
 router
-  .route("/:slug")
+  .route("/:plan")
   .get(planController.getPlan)
   .patch(
     authController.protectRoute,
@@ -30,9 +31,15 @@ router
   );
 
 router.post(
-  "/:slug/subscribe",
-  authController.protectRoute,
+  "/subscribe/:plan",
+  // authController.protectRoute,
   planController.subscribe,
+);
+
+router.patch(
+  "/upgrade/:plan",
+  authController.protectRoute,
+  planController.upgradePlan,
 );
 
 // EXPORTS
