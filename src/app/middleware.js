@@ -1,6 +1,6 @@
 const express = require("express");
 const expressMongoSanitize = require("express-mongo-sanitize");
-const expressRateLimiter = require("express-rate-limiter");
+const expressRateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const hpp = require("hpp");
 const xss = require("xss-clean");
@@ -31,7 +31,7 @@ app.use(cors({ credentials: true }));
 
 if (process.env.NODE_ENV === "production") {
   app.use(
-    expressRateLimiter({
+    expressRateLimit({
       max: 100,
       windowMs: convertToMs(1, "hr"),
     }),
