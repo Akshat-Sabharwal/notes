@@ -11,7 +11,7 @@ exports.globalErrorHandler = (err, res) => {
   switch (process.env.NODE_ENV) {
     case "production":
       res
-        .status(err.code)
+        .status(err.code || 500)
         .json({ name: err.name, message: err.message });
 
       break;
