@@ -37,8 +37,10 @@ const noteSchema = mongoose.Schema(
 noteSchema.pre("save", async function (next) {
   this.slug = slugify(this.title).toLowerCase();
 
+  const text = this.text;
+
   this.text = cryptoJS.AES.encrypt(
-    this.text,
+    JSON.stringify({ text }),
     process.env.HASH_KEY,
   ).toString();
 
