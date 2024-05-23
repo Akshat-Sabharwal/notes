@@ -29,7 +29,7 @@ app.use(hpp());
 app.use(xss());
 
 app.use((req, res, next) => {
-  res.header("Allow-Control-Access-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
   next();
 });
 
