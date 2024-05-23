@@ -6,10 +6,10 @@ const {
 const { errorHandler } = require("../errors/errorHandlers");
 const Note = require("../models/Note");
 const User = require("../models/User");
+const crypto = require("crypto");
 const factoryHandler = require("../utils/factoryHandlers");
 
 exports.createNote = errorHandler(async (req, res, next) => {
-  console.log(req.user);
   if (req.user.notes.length >= req.user.subscription.maxNotes) {
     return next(
       new ServerError(
@@ -37,13 +37,15 @@ exports.createNote = errorHandler(async (req, res, next) => {
 });
 
 exports.getNote = errorHandler(async (req, res, next) => {
-  const result = await Note.findOne({
+  let result = await Note.findOne({
     slug: req.params.name,
   });
 
   if (!result) {
     return next(new ResourceError("Document not found!"));
   }
+
+  result.text = crypto.dec;
 
   res.status(200).json({
     status: "success",

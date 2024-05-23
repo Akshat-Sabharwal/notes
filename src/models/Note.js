@@ -37,7 +37,10 @@ const noteSchema = mongoose.Schema(
 noteSchema.pre("save", async function (next) {
   this.slug = slugify(this.title).toLowerCase();
 
-  this.text = cryptoJS.AES.encrypt(this.text, process.env.HASH_KEY);
+  this.text = cryptoJS.AES.encrypt(
+    this.text,
+    process.env.HASH_KEY,
+  ).toString();
 
   next();
 });
@@ -49,15 +52,17 @@ noteSchema.pre(/^find/, function (next) {
 });
 
 noteSchema.post("find", function (docs, next) {
-  for (const doc of docs) {
-    doc.text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
+  for (let doc of docs) {
+    let text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
+    doc.text = text.toString(cryptoJS.enc.Utf8);
   }
 
   next();
 });
 
 noteSchema.post(/^findOne/, function (doc, next) {
-  doc.text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
+  let text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
+  doc.text = text.toString(cryptoJS.enc.Utf8);
   next();
 });
 
