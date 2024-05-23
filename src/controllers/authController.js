@@ -100,9 +100,10 @@ exports.login = errorHandler(async (req, res, next) => {
   const token = await jwtSignToken(user._id);
 
   res.cookie("jwt-token", token, {
-    expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
+    maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
     httpOnly: true,
-    // secure: true,
+    secure: true,
+    sameSite: "none",
   });
 
   // res.header(
