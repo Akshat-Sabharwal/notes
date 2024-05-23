@@ -19,6 +19,7 @@ exports.createNote = errorHandler(async (req, res, next) => {
   }
   const result = await Note.create({
     title: req.body.title,
+    description: req.body.description,
     text: req.body.text,
     tags: req.body.tags,
     author: req.user._id,
