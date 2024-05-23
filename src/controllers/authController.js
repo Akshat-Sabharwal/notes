@@ -107,7 +107,7 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.header(
     "Set-Cookie",
-    `jwt-token=${token}; HttpOnly; Secure; Max-Age=${convertToMs(process.env.JWT_EXPIRES_IN, "d")}; SameSite=None; Partition;`,
+    `jwt-token=${token}; HttpOnly; Secure; Max-Age=${convertToMs(process.env.JWT_EXPIRES_IN, "d")}; SameSite=None; Partitioned;`,
   );
 
   res.status(200).json({
