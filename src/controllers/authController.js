@@ -99,15 +99,15 @@ exports.login = errorHandler(async (req, res, next) => {
   }
   const token = await jwtSignToken(user._id);
 
-  res.cookie("jwt-token", token, {
-    expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    httpOnly: true,
-    secure: true,
-  });
+  // res.cookie("jwt-token", token, {
+  //   expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
+  //   httpOnly: true,
+  //   secure: true,
+  // });
 
   res.header(
     "Set-Cookie",
-    `jwt-token=${token}; HttpOnly; Secure; Max-Age=${convertToMs(process.env.JWT_EXPIRES_IN, "d")}; SameSite=None;`,
+    `jwt-token=${token}; HttpOnly; Secure; Max-Age=${convertToMs(process.env.JWT_EXPIRES_IN, "d")}; SameSite=None; Partition;`,
   );
 
   res.status(200).json({
