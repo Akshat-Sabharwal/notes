@@ -42,7 +42,7 @@ app.use(
 if (process.env.NODE_ENV === "production") {
   app.use(
     expressRateLimit({
-      max: 100,
+      max: 500,
       windowMs: convertToMs(1, "hr"),
     }),
   );
@@ -52,8 +52,11 @@ app.set("trust proxy", 1);
 
 // DEV
 app.use(express.json());
-app.use(morgan("dev"));
 app.use(cookieParser());
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // ROUTERS
 app.use("/user", userRouter);
