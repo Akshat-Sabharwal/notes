@@ -32,6 +32,7 @@ let origin;
 
 app.use((req, res, next) => {
   origin = req.headers.origin;
+  next();
 });
 
 app.use(cors({ origin: origin, credentials: true }));
