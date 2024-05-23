@@ -66,9 +66,6 @@ exports.signup = errorHandler(async (req, res, next) => {
     return next(new JWTError("Token could not be created!"));
   }
 
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", "true");
-
   res.cookie("jwt-token", token, {
     expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
     httpOnly: true,
@@ -101,9 +98,6 @@ exports.login = errorHandler(async (req, res, next) => {
   }
   const token = await jwtSignToken(user._id);
 
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", "true");
-
   res.cookie("jwt-token", token, {
     expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
     httpOnly: true,
@@ -124,9 +118,6 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
 
   const token = await user.createPasswordResetToken();
   await user.save();
-
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", "true");
 
   res.cookie("password-reset-token", token, {
     expire: Date.now() + user.resetTokenExpires,
@@ -169,9 +160,6 @@ exports.resetPassword = errorHandler(async (req, res, next) => {
   user.passwordResetToken = undefined;
   user.resetTokenExpires = undefined;
   await user.save();
-
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Credentials", "true");
 
   res.status(200).json({
     status: "success",

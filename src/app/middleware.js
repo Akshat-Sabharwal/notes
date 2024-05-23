@@ -27,7 +27,14 @@ app.use(helmet());
 app.use(expressMongoSanitize());
 app.use(hpp());
 app.use(xss());
-app.use(cors({ credentials: true }));
+
+let origin;
+
+app.use((req, res, next) => {
+  origin = req.headers.origin;
+});
+
+app.use(cors({ origin: origin, credentials: true }));
 
 if (process.env.NODE_ENV === "production") {
   app.use(
