@@ -28,11 +28,8 @@ app.use(expressMongoSanitize());
 app.use(hpp());
 app.use(xss());
 
-let origin;
-
 app.use((req, res, next) => {
   res.header("Allow-Control-Access-Origin", req.headers.origin);
-  res.header("Allow-Control-Access-Credentials", true);
   next();
 });
 
