@@ -71,7 +71,7 @@ exports.signup = errorHandler(async (req, res, next) => {
     httpOnly: true,
     secure: true,
     path: "/",
-    sameSite: "none",
+    sameSite: "None",
   });
 
   res.status(200).send({
