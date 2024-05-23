@@ -72,6 +72,7 @@ exports.signup = errorHandler(async (req, res, next) => {
     secure: true,
     path: "/",
     sameSite: "None",
+    partitioned: true,
   });
 
   res.status(200).send({
