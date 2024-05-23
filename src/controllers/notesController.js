@@ -45,8 +45,6 @@ exports.getNote = errorHandler(async (req, res, next) => {
     return next(new ResourceError("Document not found!"));
   }
 
-  result.text = crypto.dec;
-
   res.status(200).json({
     status: "success",
     message: "Document fetched!",
