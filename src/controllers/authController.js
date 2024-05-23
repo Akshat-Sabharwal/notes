@@ -103,8 +103,9 @@ exports.login = errorHandler(async (req, res, next) => {
     expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
     httpOnly: true,
     path: "/",
-    sameSite: "none",
+    sameSite: "None",
     secure: true,
+    partitioned: true,
   });
 
   res.status(200).json({
@@ -124,8 +125,10 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
     expire: Date.now() + user.resetTokenExpires,
     httpOnly: true,
     secure: true,
+    sameSite: "None",
     credentials: true,
     path: "/",
+    partitioned: true,
   });
 
   res.status(200).json({
