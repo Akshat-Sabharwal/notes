@@ -18,9 +18,7 @@ exports.createOne = (model) => {
 
 exports.updateOne = (model) => {
   return errorHandler(async (req, res, next) => {
-    const result = await model
-      .findOne({ slug: req.params.name })
-      .select("+slug");
+    const result = await model.findOne({ slug: req.params.name });
 
     if (!result) {
       return next(new ResourceError("Document not found!"));
