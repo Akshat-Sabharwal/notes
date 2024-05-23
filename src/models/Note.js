@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const crypto = require("crypto");
+const cryptoJS = require("crypto-js");
 const validate = require("validator");
 const slugify = require("slugify");
 
@@ -37,10 +37,7 @@ const noteSchema = mongoose.Schema(
 noteSchema.pre("save", async function (next) {
   this.slug = slugify(this.title).toLowerCase();
 
-  this.text = crypto
-    .createHash("sha256")
-    .update(this.text)
-    .digest("hex");
+  this.text = cryptoJS.AES.encrypt(this.text, process.env.HASH_KEY);
 
   next();
 });
@@ -48,6 +45,19 @@ noteSchema.pre("save", async function (next) {
 // QUERY MIDDLEWARE
 noteSchema.pre(/^find/, function (next) {
   this.select("-__v");
+  next();
+});
+
+noteSchema.post("find", function (docs, next) {
+  for (const doc of docs) {
+    doc.text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
+  }
+
+  next();
+});
+
+noteSchema.post(/^findOne/, function (doc, next) {
+  doc.text = cryptoJS.AES.decrypt(doc.text, process.env.HASH_KEY);
   next();
 });
 
