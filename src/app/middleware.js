@@ -31,11 +31,12 @@ app.use(xss());
 let origin;
 
 app.use((req, res, next) => {
-  origin = req.headers.origin;
+  res.header("Allow-Control-Access-Origin", req.headers.origin);
+  res.header("Allow-Control-Access-Credentials", true);
   next();
 });
 
-app.use(cors({ origin: origin, credentials: true }));
+app.use(cors({ credentials: true }));
 
 if (process.env.NODE_ENV === "production") {
   app.use(
