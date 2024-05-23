@@ -44,8 +44,8 @@ noteSchema.pre("save", async function (next) {
     process.env.HASH_KEY,
   ).toString();
 
-  this.text = CryptoJS.enc.Base64.stringify(
-    CryptoJS.enc.Utf8.parse(jsonCipher),
+  this.text = cryptoJS.enc.Base64.stringify(
+    cryptoJS.enc.Utf8.parse(jsonCipher),
   );
 
   next();
@@ -59,8 +59,8 @@ noteSchema.pre(/^find/, function (next) {
 
 noteSchema.post("find", function (docs, next) {
   for (let doc of docs) {
-    let decData = CryptoJS.enc.Base64.parse(doc.text).toString(
-      CryptoJS.enc.Utf8,
+    let decData = cryptoJS.enc.Base64.parse(doc.text).toString(
+      cryptoJS.enc.Utf8,
     );
     let text = cryptoJS.AES.decrypt(
       decData,
@@ -74,8 +74,8 @@ noteSchema.post("find", function (docs, next) {
 });
 
 noteSchema.post(/^findOne/, function (doc, next) {
-  let decData = CryptoJS.enc.Base64.parse(doc.text).toString(
-    CryptoJS.enc.Utf8,
+  let decData = cryptoJS.enc.Base64.parse(doc.text).toString(
+    cryptoJS.enc.Utf8,
   );
   let text = cryptoJS.AES.decrypt(
     decData,
