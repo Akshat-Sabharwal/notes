@@ -28,7 +28,7 @@ app.use(expressMongoSanitize());
 app.use(hpp());
 app.use(xss());
 
-app.use(cors({ origin: "http://127.0.0.1:5173", credentials: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 if (process.env.NODE_ENV === "production") {
   app.use(
