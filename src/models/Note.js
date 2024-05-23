@@ -40,7 +40,7 @@ noteSchema.pre("save", async function (next) {
   const text = this.text;
 
   const jsonCipher = cryptoJS.AES.encrypt(
-    JSON.stringify(text),
+    JSON.stringify({ text }),
     process.env.HASH_KEY,
   ).toString();
 
