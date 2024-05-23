@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const validate = require("validator");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const { convertToMs } = require("../utils/conversion");
 
 const userSchema = mongoose.Schema(
@@ -43,9 +42,6 @@ const userSchema = mongoose.Schema(
     subscription: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Plan",
-      default: new mongoose.Types.ObjectId(
-        "6648afc744013989baf41cfc",
-      ),
     },
     createdAt: {
       type: Date,

@@ -6,7 +6,6 @@ const {
 const { errorHandler } = require("../errors/errorHandlers");
 const Plan = require("../models/Plan");
 const User = require("../models/User");
-// const { createSession } = require("../utils/payments");
 const stripe = require("stripe")(process.env.STRIPE_KEY);
 
 exports.getAllPlans = errorHandler(async (req, res, next) => {

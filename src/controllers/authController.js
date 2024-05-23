@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const { convertToMs } = require("../utils/conversion");
 const User = require("../models/User");
 const crypto = require("crypto");
+const Plan = require("../models/Plan");
 
 // LOCALS
 const jwtSignToken = async (data) => {
@@ -51,11 +52,18 @@ exports.signup = errorHandler(async (req, res, next) => {
     );
   }
 
+  const plan = await Plan.findOne({ name: "novice" });
+
+  if (!plan) {
+    return next(new ResourceError("Plan doesn't exist!"));
+  }
+
   let result = await User.create({
     name: name,
     email: email,
     password: password,
     role: role,
+    subscription: plan._id,
   });
 
   result = result.hidePassword();
@@ -67,12 +75,10 @@ exports.signup = errorHandler(async (req, res, next) => {
   }
 
   res.cookie("jwt-token", token, {
-    expire: Date.now() + convertToMs(process.env.JWT_EXPIRES_IN, "d"),
+    maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
     httpOnly: true,
     secure: true,
-    path: "/",
     sameSite: "None",
-    partitioned: true,
   });
 
   res.status(200).send({
@@ -120,13 +126,10 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
   await user.save();
 
   res.cookie("password-reset-token", token, {
-    expire: Date.now() + user.resetTokenExpires,
+    maxAge: user.resetTokenExpires,
     httpOnly: true,
     secure: true,
     sameSite: "None",
-    credentials: true,
-    path: "/",
-    partitioned: true,
   });
 
   res.status(200).json({
