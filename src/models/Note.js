@@ -16,7 +16,7 @@ const noteSchema = mongoose.Schema(
         message: "Title must have alphanumeric characters only!",
       },
     },
-    description: { type: String, maxLength: 30 },
+    description: { type: String, maxLength: 45 },
     tags: {
       type: [String],
     },
