@@ -14,10 +14,7 @@ exports.getAllPlans = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Plans fetched!",
-    result: {
-      count: plans.length,
-      plans,
-    },
+    result: plans,
   });
 });
 
@@ -89,7 +86,7 @@ exports.updatePlan = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Plan updated!",
-    result: result,
+    result,
   });
 });
 
@@ -165,7 +162,7 @@ exports.unsubscribe = errorHandler(async (req, res, next) => {
       {
         $set: {
           notes: {
-            $concatArrays: [{ $slice: ["$otes", 5] }],
+            $concatArrays: [{ $slice: ["$notes", 5] }],
           },
         },
       },

@@ -33,7 +33,7 @@ exports.createNote = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Document created!",
-    result: result,
+    result,
   });
 });
 
@@ -49,7 +49,7 @@ exports.getNote = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Document fetched!",
-    result: result,
+    result,
   });
 });
 
@@ -84,7 +84,7 @@ exports.getAllNotes = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "Notes fetched!",
-    data: notes,
+    result: notes,
   });
 });
 

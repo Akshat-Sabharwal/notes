@@ -2,7 +2,6 @@ const {
   ResourceError,
   JWTError,
   AuthError,
-  ServerError,
 } = require("../errors/errorClasses");
 const { errorHandler } = require("../errors/errorHandlers");
 const jwt = require("jsonwebtoken");

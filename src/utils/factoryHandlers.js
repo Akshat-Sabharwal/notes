@@ -11,7 +11,7 @@ exports.createOne = (model) => {
     res.status(200).json({
       status: "success",
       message: "Document created!",
-      result: result,
+      result,
     });
   });
 };
@@ -30,7 +30,7 @@ exports.updateOne = (model) => {
     res.status(200).json({
       status: "success",
       message: "Document updated!",
-      result: result,
+      result,
     });
   });
 };
@@ -63,7 +63,7 @@ exports.getOne = (model) => {
     res.status(200).json({
       status: "success",
       message: "Document fetched!",
-      result: result,
+      result,
     });
   });
 };
@@ -79,7 +79,7 @@ exports.getAll = (model) => {
     res.status(200).json({
       status: "success",
       message: "Documents fetched!",
-      result: result,
+      result,
     });
   });
 };

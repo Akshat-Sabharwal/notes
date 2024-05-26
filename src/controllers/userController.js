@@ -15,7 +15,7 @@ exports.getUser = errorHandler(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     message: "User fetched!",
-    data: user,
+    result: user,
   });
 });
 
