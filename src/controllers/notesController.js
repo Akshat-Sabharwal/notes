@@ -6,7 +6,6 @@ const {
 const { errorHandler } = require("../errors/errorHandlers");
 const Note = require("../models/Note");
 const User = require("../models/User");
-const crypto = require("crypto");
 const factoryHandler = require("../utils/factoryHandlers");
 
 exports.createNote = errorHandler(async (req, res, next) => {
@@ -17,6 +16,17 @@ exports.createNote = errorHandler(async (req, res, next) => {
       ),
     );
   }
+
+  const notes = await Note.find({ author: req.user._id });
+
+  if (notes.some((note) => note.title === req.body.title)) {
+    return next(
+      new ResourceError(
+        `Note named ${req.body.title} already exists!`,
+      ),
+    );
+  }
+
   const result = await Note.create({
     title: req.body.title,
     description: req.body.description,

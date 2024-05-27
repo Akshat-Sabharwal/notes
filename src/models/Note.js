@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const cryptoJS = require("crypto-js");
 const validate = require("validator");
 const slugify = require("slugify");
 
