@@ -50,6 +50,7 @@ exports.createNote = errorHandler(async (req, res, next) => {
 exports.getNote = errorHandler(async (req, res, next) => {
   let result = await Note.findOne({
     slug: req.params.name,
+    author: req.user._id,
   });
 
   if (!result) {
@@ -66,6 +67,7 @@ exports.getNote = errorHandler(async (req, res, next) => {
 exports.deleteNote = errorHandler(async (req, res, next) => {
   const note = await Note.findOne({
     slug: req.params.name,
+    author: req.user._id,
   });
 
   if (!note) {
@@ -111,4 +113,22 @@ exports.deleteAllNotes = errorHandler(async (req, res, next) => {
   });
 });
 
-exports.updateNote = factoryHandler.updateOne(Note);
+exports.updateNote = errorHandler(async (req, res, next) => {
+  const result = await Note.findOne({
+    slug: req.params.name,
+    author: req.user._id,
+  });
+
+  if (!result) {
+    return next(new ResourceError("Document not found!"));
+  }
+
+  Object.assign(result, req.body);
+  await result.save();
+
+  res.status(200).json({
+    status: "success",
+    message: "Document updated!",
+    result,
+  });
+});
