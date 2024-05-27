@@ -9,7 +9,6 @@ const noteSchema = mongoose.Schema(
     title: {
       type: String,
       required: [true, "A note must have a title!"],
-      unique: true,
       validate: {
         validator: (val) =>
           validate.isAlphanumeric(val, "en-US", { ignore: " " }),
