@@ -117,7 +117,7 @@ exports.updateNote = errorHandler(async (req, res, next) => {
   const notes = await Note.find({ author: req.user._id });
 
   if (req.body.title) {
-    if (notes.some((note) => note.slug === req.params.name)) {
+    if (notes.some((note) => note.title === req.body.title)) {
       return next(
         new ResourceError(
           `Note named ${req.body.title} already exists!`,
@@ -126,20 +126,20 @@ exports.updateNote = errorHandler(async (req, res, next) => {
     }
   }
 
-  const result = notes.filter(
+  const note = notes.filter(
     (note) => note.slug === req.params.name,
-  );
+  )[0];
 
-  if (!result) {
+  if (!note) {
     return next(new ResourceError("Document not found!"));
   }
 
-  Object.assign(result, req.body);
-  await result.save();
+  const updatedNote = Object.assign(note, req.body);
+  await note.save();
 
   res.status(200).json({
     status: "success",
     message: "Document updated!",
-    result,
+    result: updatedNote,
   });
 });
