@@ -23,8 +23,6 @@ exports.updateMe = errorHandler(async (req, res, next) => {
 
   const newPlan = await Plan.findOne({ name: plan });
 
-  console.log(user, newPlan);
-
   user.name = name;
   user.subscription = newPlan._id;
   await user.save();

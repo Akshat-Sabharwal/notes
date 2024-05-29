@@ -119,7 +119,7 @@ exports.login = errorHandler(async (req, res, next) => {
 
 // FORGOT PASSWORD
 exports.forgotPassword = errorHandler(async (req, res, next) => {
-  const user = await retrieveUser(req);
+  const user = await retrieveUser(req, next);
 
   const token = await user.createPasswordResetToken();
   await user.save();

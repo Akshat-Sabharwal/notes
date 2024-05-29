@@ -84,10 +84,10 @@ userSchema.methods.checkPassword = async function (passwordToCheck) {
 };
 
 // DOCUMENT MIDDLEWARE
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", function (next) {
   if (!this.isModified("password")) return next();
 
-  this.password = await bcrypt.hash(this.password, 14);
+  this.password = bcrypt.hash(this.password, 14);
   this.createdAt = Date.now();
 
   next();
