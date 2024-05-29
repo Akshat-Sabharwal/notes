@@ -17,9 +17,9 @@ exports.getMe = errorHandler(async (req, res, next) => {
 exports.updateMe = errorHandler(async (req, res, next) => {
   const { name, plan } = req.body;
 
-  const user = await User.findOne({ _id: req.user._id }).populate(
-    "subscription",
-  );
+  const user = await User.findOne({ _id: req.user._id })
+    .populate("subscription")
+    .select("+password");
 
   const newPlan = await Plan.findOne({ name: plan });
 
