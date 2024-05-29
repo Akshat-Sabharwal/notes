@@ -1,5 +1,6 @@
 const { errorHandler } = require("../errors/errorHandlers");
 const User = require("../models/User");
+const Plan = require("../models/Plan");
 
 exports.getMe = errorHandler(async (req, res, next) => {
   const user = await User.findOne({ _id: req.user._id }).populate(
@@ -14,14 +15,16 @@ exports.getMe = errorHandler(async (req, res, next) => {
 });
 
 exports.updateMe = errorHandler(async (req, res, next) => {
-  const { name, password } = req.body;
+  const { name, plan } = req.body;
 
   const user = await User.findOne({ _id: req.user._id }).populate(
     "subscription",
   );
 
+  const newPlan = await Plan.findOne({ name: plan });
+
   user.name = name;
-  user.password = password;
+  user.subscription = newPlan._id;
   await user.save();
 
   res.status(200).json({
