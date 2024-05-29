@@ -114,10 +114,21 @@ exports.deleteAllNotes = errorHandler(async (req, res, next) => {
 });
 
 exports.updateNote = errorHandler(async (req, res, next) => {
-  const result = await Note.findOne({
-    slug: req.params.name,
-    author: req.user._id,
-  });
+  const notes = await Note.find({ author: req.user._id });
+
+  if (req.body.title) {
+    if (notes.some((note) => note.slug === req.params.name)) {
+      return next(
+        new ResourceError(
+          `Note named ${req.body.title} already exists!`,
+        ),
+      );
+    }
+  }
+
+  const result = notes.filter(
+    (note) => note.slug === req.params.name,
+  );
 
   if (!result) {
     return next(new ResourceError("Document not found!"));
