@@ -21,10 +21,15 @@ exports.updateMe = errorHandler(async (req, res, next) => {
     .populate("subscription")
     .select("+password");
 
-  const newPlan = await Plan.findOne({ name: plan });
+  if (plan) {
+    const newPlan = await Plan.findOne({ name: plan });
+    user.subscription = newPlan._id;
+  }
 
-  user.name = name;
-  user.subscription = newPlan._id;
+  if (name) {
+    user.name = name;
+  }
+
   await user.save();
 
   res.status(200).json({
