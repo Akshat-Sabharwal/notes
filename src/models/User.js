@@ -85,6 +85,7 @@ userSchema.methods.checkPassword = async function (passwordToCheck) {
 
 // DOCUMENT MIDDLEWARE
 userSchema.pre("save", function (next) {
+  console.log(this.isModified("password"));
   if (!this.isModified("password")) return next();
 
   this.password = bcrypt.hash(this.password, 14);
