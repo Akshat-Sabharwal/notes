@@ -78,7 +78,7 @@ userSchema.methods.createPasswordResetToken = async function () {
 };
 
 userSchema.methods.checkPassword = async function (passwordToCheck) {
-  bcrypt.compare(passwordToCheck, this.password).then((val) => {
+  await bcrypt.compare(passwordToCheck, this.password).then((val) => {
     return val;
   });
 };
