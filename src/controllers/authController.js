@@ -102,6 +102,7 @@ exports.login = errorHandler(async (req, res, next) => {
   if (passwordCheck === false) {
     return next(new AuthError("Credentials provided are incorrect!"));
   }
+
   const token = await jwtSignToken(user._id);
 
   res.cookie("jwt-token", token, {

@@ -79,6 +79,7 @@ userSchema.methods.createPasswordResetToken = async function () {
 
 userSchema.methods.checkPassword = async function (passwordToCheck) {
   await bcrypt.compare(passwordToCheck, this.password).then((val) => {
+    console.log(val);
     return val;
   });
 };
@@ -87,7 +88,6 @@ userSchema.methods.checkPassword = async function (passwordToCheck) {
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 14);
-    console.log(this.password);
   }
 
   this.createdAt = Date.now();
