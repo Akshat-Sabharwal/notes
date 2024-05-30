@@ -15,7 +15,7 @@ exports.getMe = errorHandler(async (req, res, next) => {
 });
 
 exports.updateMe = errorHandler(async (req, res, next) => {
-  const { name, plan } = req.body;
+  const { name, plan, password } = req.body;
 
   const user = await User.findOne({ _id: req.user._id })
     .populate("subscription")
@@ -28,6 +28,10 @@ exports.updateMe = errorHandler(async (req, res, next) => {
 
   if (name) {
     user.name = name;
+  }
+
+  if (password) {
+    user.password = password;
   }
 
   await user.save();

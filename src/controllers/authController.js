@@ -139,7 +139,6 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
 
 // RESET PASSWORD
 exports.resetPassword = errorHandler(async (req, res, next) => {
-  let cookie = req.cookies["password-reset-token"];
   cookie = crypto.createHash("sha256").update(cookie).digest("hex");
 
   const user = await retrieveUser(req, next);
