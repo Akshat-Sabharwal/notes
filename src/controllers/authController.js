@@ -98,8 +98,9 @@ exports.login = errorHandler(async (req, res, next) => {
   const user = await retrieveUser(req, next);
 
   const passwordCheck = await user.checkPassword(password);
+  console.log(passwordCheck);
 
-  if (passwordCheck === false) {
+  if (!passwordCheck) {
     return next(new AuthError("Credentials provided are incorrect!"));
   }
 
