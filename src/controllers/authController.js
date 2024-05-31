@@ -95,7 +95,6 @@ exports.login = errorHandler(async (req, res, next) => {
   }
 
   const user = await retrieveUser(req, next);
-  console.log("Login: ", user);
 
   const passwordCheck = await user.checkPassword(password);
 
@@ -107,7 +106,7 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    // httpOnly: true,
+    httpOnly: false,
     secure: true,
     sameSite: "none",
   });
@@ -172,7 +171,6 @@ exports.resetPassword = errorHandler(async (req, res, next) => {
 // PROTECT ROUTE
 exports.protectRoute = errorHandler(async (req, res, next) => {
   const token = req.cookies["jwt-token"];
-  console.log("Protect route:", token);
 
   if (!token) {
     return next(new JWTError("Token not found!"));
