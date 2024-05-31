@@ -7,7 +7,6 @@ const { errorHandler } = require("../errors/errorHandlers");
 const jwt = require("jsonwebtoken");
 const { convertToMs } = require("../utils/conversion");
 const User = require("../models/User");
-const crypto = require("crypto");
 const Plan = require("../models/Plan");
 
 // LOCALS
@@ -98,7 +97,6 @@ exports.login = errorHandler(async (req, res, next) => {
   const user = await retrieveUser(req, next);
 
   const passwordCheck = await user.checkPassword(password);
-  console.log(passwordCheck);
 
   if (!passwordCheck) {
     return next(new AuthError("Credentials provided are incorrect!"));
