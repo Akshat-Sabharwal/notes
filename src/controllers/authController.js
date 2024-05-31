@@ -74,7 +74,8 @@ exports.signup = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    secure: true,
+    // httpOnly: true,
+    // secure: true,
     sameSite: "none",
   });
 
@@ -105,7 +106,8 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    secure: true,
+    // httpOnly: true,
+    // secure: true,
     sameSite: "none",
   });
 
