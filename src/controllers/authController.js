@@ -74,8 +74,8 @@ exports.signup = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    // httpOnly: true,
-    // secure: true,
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "none",
   });
 
@@ -106,8 +106,8 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    // httpOnly: true,
-    // secure: true,
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "None",
   });
 
@@ -126,8 +126,8 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
 
   res.cookie("password-reset-token", token, {
     maxAge: user.resetTokenExpires,
-    httpOnly: true,
-    secure: true,
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "none",
   });
 
