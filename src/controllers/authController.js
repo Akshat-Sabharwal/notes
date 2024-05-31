@@ -74,9 +74,8 @@ exports.signup = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
   });
 
   res.status(200).send({
@@ -106,7 +105,7 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    httpOnly: false,
+    httpOnly: true,
     secure: true,
     sameSite: "none",
   });
@@ -128,7 +127,7 @@ exports.forgotPassword = errorHandler(async (req, res, next) => {
     maxAge: user.resetTokenExpires,
     httpOnly: true,
     secure: true,
-    sameSite: "None",
+    sameSite: "none",
   });
 
   res.status(200).json({
