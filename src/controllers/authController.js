@@ -105,7 +105,6 @@ exports.login = errorHandler(async (req, res, next) => {
 
   res.cookie("jwt-token", token, {
     maxAge: convertToMs(process.env.JWT_EXPIRES_IN, "d"),
-    httpOnly: true,
     secure: true,
     sameSite: "none",
   });
